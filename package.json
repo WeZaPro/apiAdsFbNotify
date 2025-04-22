@@ -4,7 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js"
+    "test": "jest",
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "build": "npm install",
+    "clean": "rm -rf dist",
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
