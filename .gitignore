@@ -1,0 +1,6 @@
+node_modules
+.env
+.env_online
+sql
+param_fb
+node_modules
