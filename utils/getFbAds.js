@@ -137,3 +137,58 @@ exports.fetchFacebookAdsInsights = async (userObj, fb_token) => {
     );
   }
 };
+
+exports.findAdsIdFromData = async (adAccountId, fb_token) => {
+  try {
+    const url = `https://graph.facebook.com/v19.0/act_${adAccountId}/insights`;
+
+    const params = {
+      access_token: fb_token,
+      level: "ad",
+      fields: [
+        "ad_id",
+        "ad_name",
+        "campaign_name",
+        "adset_name",
+        "cpc",
+        "ctr",
+        "cpm",
+        "reach",
+        "impressions",
+        "actions",
+        "spend",
+        "cost_per_action_type",
+      ].join(","),
+      date_preset: "this_month",
+
+      // filtering: [
+      //   {
+      //     field: "ad.effective_status",
+      //     operator: "IN",
+      //     value: ["PAUSED", "ARCHIVED"], // ["ACTIVE","PAUSED", "ARCHIVED"]
+      //   },
+      // ],
+    };
+
+    const response = await axios.get(url, { params });
+
+    const adsData = response.data.data;
+
+    // console.log("response ", response.data.data);
+    let sendDataAds = [];
+    adsData.forEach((element) => {
+      sendDataAds.push(element);
+    });
+    // console.log("🟢 sendDataAds:", sendDataAds);
+    return sendDataAds.map((ad) => ({
+      ad_id: ad.ad_id,
+      ad_name: ad.ad_name,
+    }));
+  } catch (error) {
+    console.error(
+      "❌ Error fetching ads data:",
+      error.response?.data || error.message
+    );
+    return null;
+  }
+};

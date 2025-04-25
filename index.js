@@ -6,6 +6,10 @@ const app = express();
 const webhook = require("./routes/webhook");
 // const auth = require("./routes/auth");
 const config = require("./routes/config");
+
+const dbConfig = require("./utils/db");
+
+const getAdsId = require("./controllers/facebookController");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const axios = require("axios");
@@ -79,6 +83,31 @@ app.get("/callback", async (req, res) => {
       error: "Something went wrong",
       details: err.response?.data || err.message,
     });
+  }
+});
+
+app.post("/adsId", async (req, res) => {
+  // console.log("req.body ", req.body);
+  const lineUserId = req.body.lineUserId;
+
+  try {
+    const getUserData = await getAdsId.getFBadsId(lineUserId);
+    res.json({ message: "Get Ads Id.", data: getUserData }); // ส่งค่าจริงกลับไป
+  } catch (error) {
+    console.error("❌ Error: ", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.post("/userConfig", async (req, res) => {
+  // console.log("req.body ", req.body);
+  const lineUserId = req.body.lineUserId;
+  try {
+    const getUserData = await dbConfig.getConfigFromDb(lineUserId);
+    res.json({ message: "Get user config.", data: getUserData }); // ส่งค่าจริงกลับไป
+  } catch (error) {
+    console.error("❌ Error: ", error.message);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 

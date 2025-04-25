@@ -57,3 +57,75 @@ exports.getAllLineUserIds = async () => {
   console.log("Users with parsed notifyConfig:", users);
   return users;
 };
+
+exports.getConfigFromDb = async (lineUserId) => {
+  console.log("getConfigFromDb ");
+  try {
+    const [rows] = await db.execute(
+      "SELECT * FROM users WHERE lineUserId = ?",
+      [lineUserId]
+    );
+
+    if (rows.length === 0) {
+      console.log("ไม่พบผู้ใช้ที่มี lineUserId นี้");
+      return null;
+    }
+    console.log("rows ", rows);
+    const user = rows[0];
+    console.log("user data ", user);
+    const ads_id = JSON.parse(user.ads_id || "[]");
+    const adAccountId = JSON.parse(user.adAccountId || "[]");
+    const triggerTime = JSON.parse(user.triggerTime || "[]");
+
+    // return user;
+    return {
+      lineUserId: user.lineUserId,
+      displayName: user.displayName,
+      MsgCheck: user.MsgCheck,
+      SpendCheck: user.SpendCheck,
+      CtrCheck: user.CtrCheck,
+      CpmCheck: user.CpmCheck,
+      costMsgValue: user.costMsgValue,
+      SpendValue: user.SpendValue,
+      CtrValue: user.CtrValue,
+      CpmValue: user.CpmValue,
+      triggerTime,
+      ads_id,
+      adAccountId,
+      // fbAccessToken: user.fbAccessToken,
+    };
+  } catch (error) {
+    console.error(`❌ error: `, error.message);
+    return null;
+  }
+};
+
+exports.getAdsIdDb = async (lineUserId) => {
+  try {
+    const [rows] = await db.execute(
+      "SELECT * FROM users WHERE lineUserId = ?",
+      [lineUserId]
+    );
+
+    if (rows.length === 0) {
+      console.log("ไม่พบผู้ใช้ที่มี lineUserId นี้");
+      return null;
+    }
+
+    const user = rows[0];
+    // console.log("user ", user);
+    const ads_id = JSON.parse(user.ads_id || "[]");
+    const adAccountId = JSON.parse(user.adAccountId || "[]");
+    // const fbAccessToken = JSON.parse(user.fbAccessToken || "[]");
+
+    return {
+      lineUserId: user.lineUserId,
+      ads_id,
+      adAccountId,
+      fbAccessToken: user.fbAccessToken,
+    };
+  } catch (error) {
+    console.error(`❌ error: `, error.message);
+    return null;
+  }
+};

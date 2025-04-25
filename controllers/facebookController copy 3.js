@@ -5,7 +5,6 @@ const {
   fetchFacebookAdsInsights,
   findAdsIdFromData,
 } = require("../utils/getFbAds"); // ต้องมี function นี้ใน db.js
-const cron = require("node-cron");
 
 exports.sendFBdata = async () => {
   const users = await getAllLineUserIds(); // ดึง lineUserId ทั้งหมดจาก DB
@@ -85,21 +84,3 @@ exports.getFBadsId = async (lineUserId) => {
     return sendAidsId;
   }
 };
-
-// เรียกใช้ฟังก์ชัน sendFBdata ทุกชั่วโมง (นาทีที่ 0 ของทุกชั่วโมง)
-// cron.schedule("0 * * * *", async () => {
-//   console.log("📆 กำลังรัน cron job: sendFBdata");
-//   await sendFBdata();
-// });
-
-// 13.08
-// cron.schedule("08 13 * * *", async () => {
-//   console.log("📆 รันตอน 08:30 ทุกวัน");
-//   await sendFBdata();
-// });
-
-// รันทุกชั่วโมง เวลา HH:00 (เช่น 07:00, 08:00, ..., 23:00)
-cron.schedule("0 7-23 * * *", async () => {
-  console.log("📆 Cron Job: รันทุกชั่วโมงระหว่าง 07:00 ถึง 23:00");
-  await sendFBdata();
-});
