@@ -10,6 +10,7 @@ const config = require("./routes/config");
 const dbConfig = require("./utils/db");
 
 const getAdsId = require("./controllers/facebookController");
+const { sendFBdata } = require("./controllers/facebookController");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const axios = require("axios");
@@ -115,6 +116,30 @@ app.post("/userConfig", async (req, res) => {
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to Facebook Ads API application." });
 });
+
+// cron.schedule(
+//   "44 16 * * *",
+//   async () => {
+//     //14:17
+//     console.log("📆 รันตอน 08:30 ทุกวัน");
+//     await sendFBdata();
+//   },
+//   {
+//     timezone: "Asia/Bangkok",
+//   }
+// );
+
+// รันทุกชั่วโมง เวลา HH:00 (เช่น 07:00, 08:00, ..., 23:00)
+cron.schedule(
+  "0 7-23 * * *",
+  async () => {
+    console.log("📆 Cron Job: รันทุกชั่วโมงระหว่าง 07:00 ถึง 23:00");
+    await sendFBdata();
+  },
+  {
+    timezone: "Asia/Bangkok",
+  }
+);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
