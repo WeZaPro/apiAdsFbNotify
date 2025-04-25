@@ -9,10 +9,9 @@ const cron = require("node-cron");
 
 exports.sendFBdata = async () => {
   const users = await getAllLineUserIds(); // ดึง lineUserId ทั้งหมดจาก DB
-  // console.log("sendFBdata users --> ", users);
 
   for (const user of users) {
-    // console.log("Users fetched user from DB:", user);
+    console.log("Users fetched user from DB:", user);
     const message = `${user.displayName}📣 แจ้งเตือนจาก Facebook: ข้อมูลใหม่มาแล้ว!`;
 
     try {
@@ -40,13 +39,13 @@ exports.sendFBdata = async () => {
         Status: user.Status, // <-- เพิ่มตรงนี้ถ้ายังไม่มี
         _date_preset: user.alertTime,
       };
-      // console.log("triggerTime --> ", userObj.triggerTime);
+      console.log("triggerTime --> ", userObj.triggerTime);
       //check trigger time ---start
       const now = new Date(); // เวลาปัจจุบัน
       const hours = now.getHours(); // ดึงเฉพาะชั่วโมง (0-23)
       const hourText = hours.toString(); // แปลงเป็นข้อความ
 
-      // console.log("ชั่วโมงตอนนี้คือ:", hourText);
+      console.log("ชั่วโมงตอนนี้คือ:", hourText);
       let check_triggerTime = userObj.triggerTime;
       const currentHour = now.getHours().toString().padStart(2, "0"); // ดึงชั่วโมงเป็น string เช่น "10", "12"
 
@@ -94,10 +93,10 @@ exports.getFBadsId = async (lineUserId) => {
 // });
 
 // 13.08
-// cron.schedule("12 14 * * *", async () => {
-//   console.log("📆 รันตอน 08:30 ทุกวัน");
-//   await sendFBdata();
-// });
+cron.schedule("07 14 * * *", async () => {
+  console.log("📆 รันตอน 08:30 ทุกวัน");
+  await sendFBdata();
+});
 
 // รันทุกชั่วโมง เวลา HH:00 (เช่น 07:00, 08:00, ..., 23:00)
 // cron.schedule("0 7-23 * * *", async () => {
