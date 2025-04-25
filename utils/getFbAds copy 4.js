@@ -5,8 +5,7 @@ const moment = require("moment");
 // const express = require("express");
 require("dotenv").config();
 
-// const check_imp = 100;
-const check_imp = process.env.IMP;
+const check_imp = 100;
 function convertTime(_timer) {
   const timeMap = {
     today: "วันนี้",
